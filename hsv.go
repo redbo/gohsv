@@ -66,33 +66,30 @@ func (c *HSV) RGBA() (uint32, uint32, uint32, uint32) {
 	return uint32(r), uint32(g), uint32(b), 0xFFFF
 }
 
+var HSVModel = color.ModelFunc(
+	func(c color.Color) color.Color {
+		r, g, b, _ := c.RGBA()
+		h, s, v := RGBtoHSV(r, g, b)
+		return &HSV{H: h, S: s, V: v}
+	},
+)
+
 // HSVImage is an in-memory image whose At method returns HSV values.
 type HSVImage struct {
-	Pix    []HSV
-	Stride int
-	Rect   image.Rectangle
+	Pix  []HSV
+	Rect image.Rectangle
 }
 
 func (i *HSVImage) ColorModel() color.Model {
-	return color.ModelFunc(
-		func(c color.Color) color.Color {
-			r, g, b, _ := c.RGBA()
-			h, s, v := RGBtoHSV(r, g, b)
-			return &HSV{
-				H: h,
-				S: s,
-				V: v,
-			}
-		})
+	return HSVModel
 }
 
 func (i *HSVImage) Bounds() image.Rectangle {
-	return image.Rectangle{}
+	return i.Rect
 }
 
 func (i *HSVImage) At(x, y int) color.Color {
-	return nil
+	return &i.Pix[y*i.Rect.Dx()+x]
 }
 
-// verify HSVImage satisfies the Image interface
-var _ = image.Image(&HSVImage{})
+var _ = image.Image(&HSVImage{}) // verify HSVImage satisfies the Image interface
