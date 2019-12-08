@@ -11,22 +11,28 @@ import (
 // in RGB color space, with values 0 - 0xFFFF.
 func HSVtoRGB(h, s, v float64) (r, g, b uint32) {
 	h, f := math.Modf(h / 60.0)
-	p := v * (1.0 - s)
-	q := v * (1.0 - (s * f))
-	t := v * (1.0 - (s * (1.0 - f)))
+	p := (v * (1.0 - s))
+	q := (v * (1.0 - (s * f)))
+	t := (v * (1.0 - (s * (1.0 - f))))
 	switch int(h) {
 	default:
-		return uint32(v * 0xffff), uint32(t * 0xffff), uint32(p * 0xffff)
+		return uint32(math.Round(v * 0xffff)), uint32(math.Round(t * 0xffff)),
+			uint32(math.Round(p * 0xffff))
 	case 1:
-		return uint32(q * 0xffff), uint32(v * 0xffff), uint32(p * 0xffff)
+		return uint32(math.Round(q * 0xffff)), uint32(math.Round(v * 0xffff)),
+			uint32(math.Round(p * 0xffff))
 	case 2:
-		return uint32(p * 0xffff), uint32(v * 0xffff), uint32(t * 0xffff)
+		return uint32(math.Round(p * 0xffff)), uint32(math.Round(v * 0xffff)),
+			uint32(math.Round(t * 0xffff))
 	case 3:
-		return uint32(p * 0xffff), uint32(q * 0xffff), uint32(v * 0xffff)
+		return uint32(math.Round(p * 0xffff)), uint32(math.Round(q * 0xffff)),
+			uint32(math.Round(v * 0xffff))
 	case 4:
-		return uint32(t * 0xffff), uint32(p * 0xffff), uint32(v * 0xffff)
+		return uint32(math.Round(t * 0xffff)), uint32(math.Round(p * 0xffff)),
+			uint32(math.Round(v * 0xffff))
 	case 5:
-		return uint32(v * 0xffff), uint32(p * 0xffff), uint32(q * 0xffff)
+		return uint32(math.Round(v * 0xffff)), uint32(math.Round(p * 0xffff)),
+			uint32(math.Round(q * 0xffff))
 	}
 }
 
@@ -52,9 +58,8 @@ func RGBtoHSV(r, g, b uint32) (h, s, v float64) {
 
 	if cmax == 0 {
 		return h, 0, cmax
-	} else {
-		return h, (diff / cmax), cmax
 	}
+	return h, (diff / cmax), cmax
 }
 
 type HSV struct {
