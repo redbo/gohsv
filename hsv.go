@@ -11,28 +11,23 @@ import (
 // in RGB color space, with values 0 - 0xFFFF.
 func HSVtoRGB(h, s, v float64) (r, g, b uint32) {
 	h, f := math.Modf(h / 60.0)
-	p := (v * (1.0 - s))
-	q := (v * (1.0 - (s * f)))
-	t := (v * (1.0 - (s * (1.0 - f))))
+	p := uint32(math.Round((v * (1.0 - s)) * 0xffff))
+	q := uint32(math.Round((v * (1.0 - (s * f))) * 0xffff))
+	t := uint32(math.Round((v * (1.0 - (s * (1.0 - f)))) * 0xffff))
+	vr := uint32(math.Round(v * 0xffff))
 	switch int(h) {
 	default:
-		return uint32(math.Round(v * 0xffff)), uint32(math.Round(t * 0xffff)),
-			uint32(math.Round(p * 0xffff))
+		return vr, t, p
 	case 1:
-		return uint32(math.Round(q * 0xffff)), uint32(math.Round(v * 0xffff)),
-			uint32(math.Round(p * 0xffff))
+		return q, vr, p
 	case 2:
-		return uint32(math.Round(p * 0xffff)), uint32(math.Round(v * 0xffff)),
-			uint32(math.Round(t * 0xffff))
+		return p, vr, t
 	case 3:
-		return uint32(math.Round(p * 0xffff)), uint32(math.Round(q * 0xffff)),
-			uint32(math.Round(v * 0xffff))
+		return p, q, vr
 	case 4:
-		return uint32(math.Round(t * 0xffff)), uint32(math.Round(p * 0xffff)),
-			uint32(math.Round(v * 0xffff))
+		return t, p, vr
 	case 5:
-		return uint32(math.Round(v * 0xffff)), uint32(math.Round(p * 0xffff)),
-			uint32(math.Round(q * 0xffff))
+		return vr, p, q
 	}
 }
 
