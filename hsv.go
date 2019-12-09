@@ -98,6 +98,8 @@ func (i *HSVImage) At(x, y int) color.Color {
 	return &i.Pix[y*i.Rect.Dx()+x]
 }
 
+var _ = image.Image(&HSVImage{}) // verify HSVImage satisfies the Image interface
+
 // NewHSV returns anew HSVImage with the given bounds.
 func NewHSV(r image.Rectangle) *HSVImage {
 	return &HSVImage{
@@ -105,5 +107,3 @@ func NewHSV(r image.Rectangle) *HSVImage {
 		Rect: r,
 	}
 }
-
-var _ = image.Image(&HSVImage{}) // verify HSVImage satisfies the Image interface

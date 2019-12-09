@@ -3,21 +3,23 @@ package gohsv
 import "testing"
 
 func TestRoundtripColors(t *testing.T) {
-	testCases := [][3]uint32{
-		{30, 0xf, 0xf},
-		{90, 0xff, 0xf0},
-		{150, 0xff, 0xff},
-		{210, 0xf, 0x0},
-		{270, 0xff1, 0xf1},
-		{330, 0xff0, 0xf0},
+	testCases := []uint32{
+		0x0, 0x1, 0x9fc9, 0x3d69, 0x5e69,
+		0xcc25, 0x84b6, 0xe095, 0x3d6d,
+		0xfa91, 0x1c93, 0xe829, 0x9f5,
+		0xbca2, 0xb678, 0xc1a4,
 	}
-	for _, tc := range testCases {
-		h, s, v := RGBtoHSV(tc[0], tc[1], tc[2])
-		r, g, b := HSVtoRGB(h, s, v)
-		if r != tc[0] || g != tc[1] || b != tc[2] {
-			t.Logf("Failed to roundtrip color: %d, %d, %d -> %d, %d, %d",
-				tc[0], tc[1], tc[2], r, g, b)
-			t.Fail()
+	for _, tr := range testCases {
+		for _, tg := range testCases {
+			for _, tb := range testCases {
+				h, s, v := RGBtoHSV(tr, tg, tb)
+				r, g, b := HSVtoRGB(h, s, v)
+				if r != tr || g != tg || b != tb {
+					t.Logf("Failed to roundtrip color: %d, %d, %d -> %d, %d, %d",
+						tr, tg, tb, r, g, b)
+					t.Fail()
+				}
+			}
 		}
 	}
 }
