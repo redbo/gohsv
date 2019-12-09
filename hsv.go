@@ -98,6 +98,12 @@ func (i *HSVImage) At(x, y int) color.Color {
 	return &i.Pix[y*i.Rect.Dx()+x]
 }
 
+func (i *HSVImage) Set(x, y int, c color.Color) {
+	r, g, b, _ := c.RGBA()
+	h, s, v := RGBtoHSV(r, g, b)
+	i.Pix[y*i.Rect.Dx()+x] = &HSV{H: h, S: s, V: v}
+}
+
 var _ = image.Image(&HSVImage{}) // verify HSVImage satisfies the Image interface
 
 // NewHSV returns anew HSVImage with the given bounds.
