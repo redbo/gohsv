@@ -11,10 +11,10 @@ import (
 // in RGB color space, with values 0 - 0xFFFF.
 func HSVtoRGB(h, s, v float64) (r, g, b uint32) {
 	h, f := math.Modf(h / 60.0)
-	p := uint32(math.Round((v * 255.0 * (1.0 - s)) * 0xffff))
-	q := uint32(math.Round((v * 255.0 * (1.0 - (s * f))) * 0xffff))
-	t := uint32(math.Round((v * 255.0 * (1.0 - (s * (1.0 - f)))) * 0xffff))
-	vr := uint32(math.Round(v * 255.0 * 0xffff))
+	p := uint32(math.Round((v * (1.0 - s)) * 0xffff))
+	q := uint32(math.Round((v * (1.0 - (s * f))) * 0xffff))
+	t := uint32(math.Round((v * (1.0 - (s * (1.0 - f)))) * 0xffff))
+	vr := uint32(math.Round(v * 0xffff))
 	switch int(h) {
 	default:
 		return vr, t, p
@@ -52,9 +52,9 @@ func RGBtoHSV(r, g, b uint32) (h, s, v float64) {
 	}
 
 	if cmax == 0 {
-		return h, 0, cmax / 255.0
+		return h, 0, cmax
 	}
-	return h, (diff / cmax), cmax / 255.0
+	return h, (diff / cmax), cmax
 }
 
 // HSV represents a color in hue-saturation-value space.  Hue is a

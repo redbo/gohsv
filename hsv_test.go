@@ -37,9 +37,9 @@ func TestRGBtoHSV(t *testing.T) {
 		return diff < a/100.0 || diff < 0.000001
 	}
 	for _, ex := range examples {
-		r := ((ex.color >> 16) & 0xFF) * 0xffff
-		g := ((ex.color >> 8) & 0xFF) * 0xffff
-		b := (ex.color & 0xFF) * 0xffff
+		r := ((ex.color >> 16) & 0xFF) * 0x101
+		g := ((ex.color >> 8) & 0xFF) * 0x101
+		b := (ex.color & 0xFF) * 0x101
 		h, s, v := RGBtoHSV(r, g, b)
 		if !withinTolerance(ex.h, h) {
 			t.Logf("Hue incorrect for %x (have: %f, want: %f)", ex.color, h, ex.h)
