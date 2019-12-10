@@ -10,12 +10,11 @@ import (
 // saturation (0 - 1.0) and value (0-1.0) and returns its representation
 // in RGB color space, with values 0 - 0xFFFF.
 func HSVtoRGB(h, s, v float64) (r, g, b uint32) {
-	v *= 255.0
 	h, f := math.Modf(h / 60.0)
-	p := uint32(math.Round((v * (1.0 - s)) * 0xffff))
-	q := uint32(math.Round((v * (1.0 - (s * f))) * 0xffff))
-	t := uint32(math.Round((v * (1.0 - (s * (1.0 - f)))) * 0xffff))
-	vr := uint32(math.Round(v * 0xffff))
+	p := uint32(math.Round((v * 255.0 * (1.0 - s)) * 0xffff))
+	q := uint32(math.Round((v * 255.0 * (1.0 - (s * f))) * 0xffff))
+	t := uint32(math.Round((v * 255.0 * (1.0 - (s * (1.0 - f)))) * 0xffff))
+	vr := uint32(math.Round(v * 255.0 * 0xffff))
 	switch int(h) {
 	default:
 		return vr, t, p
@@ -70,13 +69,13 @@ func (c *HSV) RGBA() (uint32, uint32, uint32, uint32) {
 	return uint32(r), uint32(g), uint32(b), 0xFFFF
 }
 
-var HSVModel = color.ModelFunc(
-	func(c color.Color) color.Color {
-		r, g, b, _ := c.RGBA()
-		h, s, v := RGBtoHSV(r, g, b)
-		return &HSV{H: h, S: s, V: v}
-	},
-)
+func hsvModel(c color.Color) color.Color {
+	r, g, b, _ := c.RGBA()
+	h, s, v := RGBtoHSV(r, g, b)
+	return &HSV{H: h, S: s, V: v}
+}
+
+var HSVModel = color.ModelFunc(hsvModel)
 
 // HSVImage is an in-memory image which stores image data
 // in hue-saturation-value color space.
