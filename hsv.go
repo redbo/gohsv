@@ -10,6 +10,7 @@ import (
 // saturation (0 - 1.0) and value (0-1.0) and returns its representation
 // in RGB color space, with values 0 - 0xFFFF.
 func HSVtoRGB(h, s, v float64) (r, g, b uint32) {
+	v *= 255.0
 	h, f := math.Modf(h / 60.0)
 	p := uint32(math.Round((v * (1.0 - s)) * 0xffff))
 	q := uint32(math.Round((v * (1.0 - (s * f))) * 0xffff))
@@ -52,9 +53,9 @@ func RGBtoHSV(r, g, b uint32) (h, s, v float64) {
 	}
 
 	if cmax == 0 {
-		return h, 0, cmax
+		return h, 0, cmax / 255.0
 	}
-	return h, (diff / cmax), cmax
+	return h, (diff / cmax), cmax / 255.0
 }
 
 // HSV represents a color in the hue-saturation-value space.  Hue is
@@ -101,7 +102,7 @@ func (i *HSVImage) At(x, y int) color.Color {
 func (i *HSVImage) Set(x, y int, c color.Color) {
 	r, g, b, _ := c.RGBA()
 	h, s, v := RGBtoHSV(r, g, b)
-	i.Pix[y*i.Rect.Dx()+x] = &HSV{H: h, S: s, V: v}
+	i.Pix[y*i.Rect.Dx()+x] = HSV{H: h, S: s, V: v}
 }
 
 var _ = image.Image(&HSVImage{}) // verify HSVImage satisfies the Image interface
