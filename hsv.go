@@ -58,15 +58,12 @@ func RGBtoHSV(r, g, b uint32) (h, s, v float64) {
 	return h, (diff / cmax), cmax / 255.0
 }
 
-// HSV represents a color in the hue-saturation-value space.  Hue is
-// a value between 0 and 360, saturation and value are represented as
+// HSV represents a color in hue-saturation-value space.  Hue is a
+// value between 0 and 360, saturation and value are represented as
 // numbers between 0 and 1.0.
 type HSV struct {
 	H, S, V float64
 }
-
-// TODO: figure out what "alpha-premultiplied color" means
-// and if I need to do anything about it.
 
 func (c *HSV) RGBA() (uint32, uint32, uint32, uint32) {
 	r, g, b := HSVtoRGB(c.H, c.S, c.V)
@@ -81,7 +78,8 @@ var HSVModel = color.ModelFunc(
 	},
 )
 
-// HSVImage is an in-memory image whose At method returns HSV values.
+// HSVImage is an in-memory image which stores image data
+// in hue-saturation-value color space.
 type HSVImage struct {
 	Pix  []HSV
 	Rect image.Rectangle
@@ -107,7 +105,7 @@ func (i *HSVImage) Set(x, y int, c color.Color) {
 
 var _ = image.Image(&HSVImage{}) // verify HSVImage satisfies the Image interface
 
-// NewHSV returns anew HSVImage with the given bounds.
+// NewHSV returns a new HSVImage with the given bounds.
 func NewHSV(r image.Rectangle) *HSVImage {
 	return &HSVImage{
 		Pix:  make([]HSV, r.Dx()*r.Dy()),
